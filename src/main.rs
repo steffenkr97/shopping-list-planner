@@ -65,7 +65,7 @@ fn create_ingredient(post_body: Json<NewIngredient>) -> Result<Created<Json<NewI
 
     let new_ing = NewIngredient {
         name: post_body.name.to_string(),
-        description: post_body.description.to_string(),
+        description: post_body.description.clone(),
         category_id: post_body.category_id,
     };
 
@@ -83,7 +83,7 @@ fn get_all_ingredients() -> Result<Json<Vec<Ingredient>>> {
     let result: Vec<Ingredient> = ingredients
         .load::<Ingredient>(conn)
         .expect("Error loading ingredients");
-    
+
     Ok(Json(result))
 }
 

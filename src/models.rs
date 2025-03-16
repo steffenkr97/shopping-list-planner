@@ -18,7 +18,7 @@ pub struct NewCategory {
 pub struct Ingredient {
     pub id: i32,
     pub name: String,
-    pub description: String,
+    pub description: Option<String>,
     pub category_id: i32,
 }
 
@@ -26,7 +26,7 @@ pub struct Ingredient {
 #[diesel(table_name = ingredients)]
 pub struct NewIngredient {
     pub name: String,
-    pub description: String,
+    pub description: Option<String>,
     pub category_id: i32,
 }
 

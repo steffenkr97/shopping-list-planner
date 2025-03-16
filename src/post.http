@@ -20,13 +20,22 @@ GET localhost:8000/api/category/all
 
 
 
-### ingredients
-POST localhost:8000/api/ingridient
+### ingredients with description
+POST localhost:8000/api/ingredient
 Content-Type: application/json
 
 {
   "name": "ing1",
   "description": "Meine Description",
+  "category_id": 1
+}
+
+### ingredients without description
+POST localhost:8000/api/ingredient
+Content-Type: application/json
+
+{
+  "name": "ing1",
   "category_id": 1
 }
 
