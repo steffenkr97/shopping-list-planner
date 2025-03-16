@@ -3,6 +3,7 @@ CREATE TABLE ingredients
 (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT NOT NULL,
+    description TEXT,
     category_id INTEGER,
     FOREIGN KEY (category_id) REFERENCES categories (id)
 );
