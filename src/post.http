@@ -6,10 +6,14 @@ GET https://examples.http-client.intellij.net/get
 GET localhost:8000/
 
 
-###
-POST localhost:8000/
+### Categories
+POST localhost:8000/api/category
 Content-Type: application/json
 
 {
-  "name": "content1"
+  "name": "content3!"
 }
+
+
+### 
+GET localhost:8000/api/category/all

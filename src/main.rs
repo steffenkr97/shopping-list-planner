@@ -1,34 +1,28 @@
 extern crate diesel;
-#[macro_use] extern crate rocket;
+extern crate rocket;
 
-use diesel::prelude::*;
-use rocket::{get, launch, post, routes};
-use rocket::response::Debug;
-use rocket::serde::json::Json;
 use crate::db::establish_connection;
-use crate::models::NewCategory;
+use crate::models::{Category, NewCategory};
+use crate::schema::categories::name;
+use diesel::prelude::*;
+use rocket::fs::FileServer;
+use rocket::response::Debug;
+use rocket::response::status::Created;
+use rocket::serde::json::Json;
+use rocket::{get, launch, post, routes};
 
-mod schema;
-mod models;
 mod db;
-
+mod models;
+mod schema;
 
 type Result<T, E = Debug<diesel::result::Error>> = std::result::Result<T, E>;
 
-
-#[get("/")]
-fn hello() -> &'static str {
-    "Hello, world!"
-}
-
-#[post("/", data = "<new_category>")]
-async fn create_cat(new_category: Json<NewCategory>) -> &'static str {
+#[post("/category", format = "json", data = "<post_body>")]
+fn create_category(post_body: Json<NewCategory>) -> Result<Created<Json<NewCategory>>> {
     use crate::schema::categories::dsl::*;
-
     let mut conn = establish_connection();
-
     let new_category = NewCategory {
-        name: new_category.name.to_string(),
+        name: post_body.name.to_string(),
     };
 
     diesel::insert_into(categories)
@@ -36,10 +30,23 @@ async fn create_cat(new_category: Json<NewCategory>) -> &'static str {
         .execute(&mut conn)
         .expect("Error saving new category");
 
-    "Erstellt"
+    Ok(Created::new("/").body(post_body))
+}
+
+#[get("/category/all")]
+fn get_all_categories() -> Result<Json<Vec<Category>>> {
+    use crate::schema::categories::dsl::categories;
+    let conn = &mut establish_connection();
+    let cats: Vec<Category> = categories
+        .load::<Category>(conn)
+        .expect("Error loading categories");
+
+    Ok(Json(cats))
 }
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![hello,create_cat])
+    rocket::build()
+        .mount("/", FileServer::from("static"))
+        .mount("/api", routes![create_category, get_all_categories])
 }
