@@ -11,9 +11,22 @@ POST localhost:8000/api/category
 Content-Type: application/json
 
 {
-  "name": "content3!"
+  "name": "cat2"
 }
 
 
 ### 
 GET localhost:8000/api/category/all
+
+
+
+### ingredients
+POST localhost:8000/api/ingridient
+Content-Type: application/json
+
+{
+  "name": "ing1",
+  "description": "Meine Description",
+  "category_id": 1
+}
+

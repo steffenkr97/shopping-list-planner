@@ -2,12 +2,13 @@ extern crate diesel;
 extern crate rocket;
 
 use crate::db::establish_connection;
-use crate::models::{Category, NewCategory};
-use crate::schema::categories::name;
+use crate::models::{Category, Ingredient, NewCategory, NewIngredient};
+use crate::schema::categories::dsl::categories;
+use crate::schema::ingredients::dsl::ingredients;
+use diesel::dsl::{exists, select};
 use diesel::prelude::*;
 use rocket::fs::FileServer;
-use rocket::response::Debug;
-use rocket::response::status::Created;
+use rocket::response::status::{BadRequest, Created};
 use rocket::serde::json::Json;
 use rocket::{get, launch, post, routes};
 
@@ -15,7 +16,9 @@ mod db;
 mod models;
 mod schema;
 
-type Result<T, E = Debug<diesel::result::Error>> = std::result::Result<T, E>;
+mod service;
+
+type Result<T> = std::result::Result<T, BadRequest<&'static str>>;
 
 #[post("/category", format = "json", data = "<post_body>")]
 fn create_category(post_body: Json<NewCategory>) -> Result<Created<Json<NewCategory>>> {
@@ -44,9 +47,46 @@ fn get_all_categories() -> Result<Json<Vec<Category>>> {
     Ok(Json(cats))
 }
 
+#[post("/ingredient", format = "json", data = "<post_body>")]
+fn create_ingredient(post_body: Json<NewIngredient>) -> Result<Created<Json<NewIngredient>>> {
+    let conn = &mut establish_connection();
+
+    // check if category exists
+    let category_exists = select(exists(
+        categories.filter(schema::categories::id.eq(&post_body.category_id)),
+    ))
+    .get_result::<bool>(conn)
+    .expect("Error checking existing categories");
+
+    match category_exists {
+        true => {}
+        false => return Err(BadRequest("Unbekannte Kategorie")),
+    }
+
+    let new_ing = NewIngredient {
+        name: post_body.name.to_string(),
+        description: post_body.description.to_string(),
+        category_id: post_body.category_id,
+    };
+
+    diesel::insert_into(ingredients)
+        .values(&new_ing)
+        .execute(conn)
+        .expect("Error saving new ingedient");
+    Ok(Created::new("/").body(post_body))
+}
+
+#[get("/ingredient/all")]
+fn get_all_ingredients() -> Result<Json<Vec<Ingredient>>> {
+    todo!()
+}
+
 #[launch]
 fn rocket() -> _ {
     rocket::build()
         .mount("/", FileServer::from("static"))
-        .mount("/api", routes![create_category, get_all_categories])
+        .mount(
+            "/api",
+            routes![create_category, get_all_categories, create_ingredient],
+        )
 }

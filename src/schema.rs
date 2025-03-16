@@ -11,7 +11,8 @@ diesel::table! {
     ingredients (id) {
         id -> Integer,
         name -> Text,
-        category_id -> Nullable<Integer>,
+        description -> Text,
+        category_id -> Integer,
     }
 }
 
