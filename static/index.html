@@ -1,32 +1,41 @@
 <!DOCTYPE html>
 <html>
-    <head>
+<head>
     <meta charset="utf-8">
     <script src="script.js"></script>
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">  
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <link rel="stylesheet" href="custom.css">
     <title>Rezepte</title>
-    </head>
-    <body>
-        <h1>Rezepte</h1>
-        <p>Hier kommen Rezepte undso</p>
+</head>
+<body>
+<header>
+    <h1>Rezepte</h1>
+    <p>Hier kommen Rezepte undso</p>
+</header>
+
+<main>
+
+    <div>
+        <h2>Kategorien</h2>
 
         <div>
-            <h2>Kategorien</h2>
-            
-            <div>
-                <h3>Alle Kategorien</h3>
-                <ul id="category-list"></ul>
-            </div>
-            <div>
-                <h3>Neue Kategorie</h3>
-                <form id="category-form">
-                    <label for="category-name">Kategoriename:</label>
-                    <input type="text" id="category-name" name="category-name">
-                    
-                    <button type="submit">Hinzufügen</button>
-                </form>
-            </div>
-
+            <h3>Alle Kategorien</h3>
+            <ul id="category-list"></ul>
         </div>
-    </body>
+        <div>
+            <h3>Neue Kategorie</h3>
+            <form id="category-form">
+                <label for="category-name">Kategoriename:</label>
+                <input type="text" id="category-name" name="category-name">
+
+                <button type="submit">Hinzufügen</button>
+            </form>
+        </div>
+
+    </div>
+</main>
+<footer>
+    ende undso
+</footer>
+</body>
 </html>

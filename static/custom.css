@@ -1,0 +1,46 @@
+/* Grundlegendes Layout */
+body {
+    max-width: 800px;
+    margin: auto;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+/* Überschriften */
+h1, h2, h3 {
+    color: #333;
+}
+
+/* Kategorien-Liste */
+#category-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;  /* Zentrieren der Kategorien */
+    gap: 10px;
+}
+
+#category-list li {
+    background: #f8f9fa;
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    transition: 0.3s;
+}
+
+#category-list li:hover {
+    background: #e0e0e0;
+    cursor: pointer;
+}
+
+/* Formulare */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /*max-width: 400px;*/
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
