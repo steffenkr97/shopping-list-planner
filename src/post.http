@@ -1,0 +1,15 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=RustRover
+
+###
+GET localhost:8000/
+
+
+###
+POST localhost:8000/
+Content-Type: application/json
+
+{
+  "name": "content1"
+}
