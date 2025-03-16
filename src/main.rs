@@ -78,7 +78,13 @@ fn create_ingredient(post_body: Json<NewIngredient>) -> Result<Created<Json<NewI
 
 #[get("/ingredient/all")]
 fn get_all_ingredients() -> Result<Json<Vec<Ingredient>>> {
-    todo!()
+    use crate::schema::ingredients::dsl::ingredients;
+    let conn = &mut establish_connection();
+    let result: Vec<Ingredient> = ingredients
+        .load::<Ingredient>(conn)
+        .expect("Error loading ingredients");
+    
+    Ok(Json(result))
 }
 
 #[launch]
@@ -87,6 +93,6 @@ fn rocket() -> _ {
         .mount("/", FileServer::from("static"))
         .mount(
             "/api",
-            routes![create_category, get_all_categories, create_ingredient],
+            routes![create_category, get_all_categories, create_ingredient, get_all_ingredients],
         )
 }
