@@ -5,6 +5,6 @@ edition = "2024"
 
 [dependencies]
 rocket = { version = "0.5.1", features = ["json"] }
-diesel = { version = "2.2.8", features = ["sqlite", "chrono", "uuid"] }
+diesel = { version = "2.2.8", features = ["sqlite"] }
 dotenvy = "0.15"
 serde = "1.0.219"
