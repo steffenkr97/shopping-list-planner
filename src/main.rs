@@ -87,6 +87,8 @@ fn get_all_ingredients() -> Result<Json<Vec<Ingredient>>> {
     Ok(Json(result))
 }
 
+// implement the missing rest controllers to CRUD recipes
+
 #[launch]
 fn rocket() -> _ {
     rocket::build()
