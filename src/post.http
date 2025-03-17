@@ -7,7 +7,7 @@ GET localhost:8000/
 
 
 ### Categories
-POST localhost:8000/api/category
+POST localhost:8000/api/categories
 Content-Type: application/json
 
 {
@@ -16,12 +16,12 @@ Content-Type: application/json
 
 
 ### 
-GET localhost:8000/api/category/all
+GET localhost:8000/api/categories
 
 
 
 ### ingredients with description
-POST localhost:8000/api/ingredient
+POST localhost:8000/api/ingredients
 Content-Type: application/json
 
 {
@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 ### ingredients without description
-POST localhost:8000/api/ingredient
+POST localhost:8000/api/ingredients
 Content-Type: application/json
 
 {
@@ -40,4 +40,4 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:8000/api/ingredient/all
+GET localhost:8000/api/ingredients

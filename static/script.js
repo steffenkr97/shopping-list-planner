@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function addCategory() {
     const categoryName = document.getElementById("category-name").value;
 
-    const response = await fetch("/api/category", {
+    const response = await fetch("/api/categories", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({name: categoryName})
@@ -36,7 +36,7 @@ async function addCategory() {
 }
 
 async function loadCategories() {
-    const response = await fetch("/api/category/all");
+    const response = await fetch("/api/categories");
     const categories = await response.json();
     const categoryList = document.getElementById("category-list");
     const categorySelect = document.getElementById("category-select");
@@ -59,7 +59,7 @@ async function loadCategories() {
 
 async function addIngredient() {
 
-    const respone = await fetch("/api/ingredient", {
+    const respone = await fetch("/api/ingredients", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
@@ -79,7 +79,7 @@ async function addIngredient() {
 }
 
 async function loadIngredients() {
-    const response = await fetch("/api/ingredient/all");
+    const response = await fetch("/api/ingredients");
     const ingredients = await response.json();
     const ingredientList = document.getElementById("ingredient-list");
     ingredientList.innerHTML = "";

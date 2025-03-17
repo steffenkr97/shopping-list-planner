@@ -20,7 +20,7 @@ mod service;
 
 type Result<T> = std::result::Result<T, BadRequest<&'static str>>;
 
-#[post("/category", format = "json", data = "<post_body>")]
+#[post("/categories", format = "json", data = "<post_body>")]
 fn create_category(post_body: Json<NewCategory>) -> Result<Created<Json<NewCategory>>> {
     use crate::schema::categories::dsl::*;
     let mut conn = establish_connection();
@@ -36,7 +36,7 @@ fn create_category(post_body: Json<NewCategory>) -> Result<Created<Json<NewCateg
     Ok(Created::new("/").body(post_body))
 }
 
-#[get("/category/all")]
+#[get("/categories")]
 fn get_all_categories() -> Result<Json<Vec<Category>>> {
     use crate::schema::categories::dsl::categories;
     let conn = &mut establish_connection();
@@ -47,7 +47,7 @@ fn get_all_categories() -> Result<Json<Vec<Category>>> {
     Ok(Json(cats))
 }
 
-#[post("/ingredient", format = "json", data = "<post_body>")]
+#[post("/ingredients", format = "json", data = "<post_body>")]
 fn create_ingredient(post_body: Json<NewIngredient>) -> Result<Created<Json<NewIngredient>>> {
     let conn = &mut establish_connection();
 
@@ -76,7 +76,7 @@ fn create_ingredient(post_body: Json<NewIngredient>) -> Result<Created<Json<NewI
     Ok(Created::new("/").body(post_body))
 }
 
-#[get("/ingredient/all")]
+#[get("/ingredients")]
 fn get_all_ingredients() -> Result<Json<Vec<Ingredient>>> {
     use crate::schema::ingredients::dsl::ingredients;
     let conn = &mut establish_connection();
@@ -87,7 +87,6 @@ fn get_all_ingredients() -> Result<Json<Vec<Ingredient>>> {
     Ok(Json(result))
 }
 
-// implement the missing rest controllers to CRUD recipes
 
 #[launch]
 fn rocket() -> _ {
