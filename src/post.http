@@ -53,7 +53,17 @@ Content-Type: application/json
 GET localhost:8000/api/ingredients
 
 ### get single ingredient
+GET localhost:8000/api/ingredients/1
 
 ### update ingredient
+PUT localhost:8000/api/ingredients/1
+Content-Type: application/json
+
+{
+  "name": "ing1_updated",
+  "description": "Meine Description Updated2",
+  "category_id": 1
+}
 
 ### delete ingredient
+DELETE localhost:8000/api/ingredients/1

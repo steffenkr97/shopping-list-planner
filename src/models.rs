@@ -23,7 +23,7 @@ pub struct Ingredient {
     pub category_id: i32,
 }
 
-#[derive(Insertable, Deserialize, Serialize)]
+#[derive(Insertable, Deserialize, Serialize, AsChangeset)]
 #[diesel(table_name = ingredients)]
 pub struct NewIngredient {
     pub name: String,

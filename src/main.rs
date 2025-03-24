@@ -20,6 +20,7 @@ mod service;
 
 type Result<T> = std::result::Result<T, BadRequest<&'static str>>;
 
+// region:categories
 #[post("/categories", format = "json", data = "<post_body>")]
 fn create_category(post_body: Json<NewCategory>) -> Result<Created<Json<NewCategory>>> {
     use crate::schema::categories::dsl::*;
@@ -36,7 +37,6 @@ fn create_category(post_body: Json<NewCategory>) -> Result<Created<Json<NewCateg
     Ok(Created::new("/").body(post_body))
 }
 
-// new route to update a categorie
 #[put("/categories/<_id>", format = "json", data = "<post_body>")]
 fn update_category(_id: i32, post_body: Json<NewCategory>) -> Result<Created<Json<NewCategory>>> {
     use crate::schema::categories::dsl::*;
@@ -50,7 +50,6 @@ fn update_category(_id: i32, post_body: Json<NewCategory>) -> Result<Created<Jso
     Ok(Created::new("/").body(post_body))
 }
 
-// new route to delete a categorie
 #[delete("/categories/<_id>")]
 fn delete_category(_id: i32) -> Result<Accepted<Json<Message>>> {
     use crate::schema::categories::dsl::*;
@@ -59,7 +58,7 @@ fn delete_category(_id: i32) -> Result<Accepted<Json<Message>>> {
     let affected_rows = diesel::delete(categories.filter(id.eq(_id)))
         .execute(conn)
         .map_err(|_| BadRequest("Error deleting category"))?;
-    
+
     if affected_rows == 0 {
         return Err(BadRequest("Category not found"));
     }
@@ -71,7 +70,6 @@ fn delete_category(_id: i32) -> Result<Accepted<Json<Message>>> {
     Ok(Accepted(answer))
 }
 
-// new route to get a categorie
 #[get("/categories/<_id>")]
 fn get_category(_id: i32) -> Result<Json<Category>> {
     use crate::schema::categories::dsl::*;
@@ -94,7 +92,11 @@ fn get_all_categories() -> Result<Json<Vec<Category>>> {
 
     Ok(Json(cats))
 }
+// endregion:categories
 
+
+// region:ingredients
+// Create a new ingredient
 #[post("/ingredients", format = "json", data = "<post_body>")]
 fn create_ingredient(post_body: Json<NewIngredient>) -> Result<Created<Json<NewIngredient>>> {
     let conn = &mut establish_connection();
@@ -124,6 +126,7 @@ fn create_ingredient(post_body: Json<NewIngredient>) -> Result<Created<Json<NewI
     Ok(Created::new("/").body(post_body))
 }
 
+// Get all ingredients
 #[get("/ingredients")]
 fn get_all_ingredients() -> Result<Json<Vec<Ingredient>>> {
     use crate::schema::ingredients::dsl::ingredients;
@@ -134,6 +137,62 @@ fn get_all_ingredients() -> Result<Json<Vec<Ingredient>>> {
 
     Ok(Json(result))
 }
+
+// Get single ingredient
+#[get("/ingredients/<_id>")]
+fn get_ingredient(_id: i32) -> Result<Json<Ingredient>> {
+    let conn = &mut establish_connection();
+    let result: Ingredient = ingredients
+        .find(_id)
+        .first(conn)
+        .expect("Error loading ingredient");
+
+    Ok(Json(result))
+}
+
+// Update ingredient
+#[put("/ingredients/<_id>", format = "json", data = "<post_body>")]
+fn update_ingredient(
+    _id: i32,
+    post_body: Json<NewIngredient>,
+) -> Result<Created<Json<NewIngredient>>> {
+    use crate::schema::ingredients::dsl::*;
+    let conn = &mut establish_connection();
+    let new_ing = NewIngredient {
+        name: post_body.name.to_string(),
+        description: post_body.description.clone(),
+        category_id: post_body.category_id,
+    };
+
+    diesel::update(ingredients.find(_id))
+        .set(&new_ing)
+        .execute(conn)
+        .expect("Error updating ingredient");
+
+    Ok(Created::new("/").body(post_body))
+}
+
+// Delete ingredient
+#[delete("/ingredients/<_id>")]
+fn delete_ingredient(_id: i32) -> Result<Accepted<Json<Message>>> {
+    use crate::schema::ingredients::dsl::*;
+    let conn = &mut establish_connection();
+
+    let affected_rows = diesel::delete(ingredients.filter(id.eq(_id)))
+        .execute(conn)
+        .map_err(|_| BadRequest("Error deleting ingredient"))?;
+
+    if affected_rows == 0 {
+        return Err(BadRequest("Ingredient not found"));
+    }
+
+    let answer = Json(Message {
+        message: "Ingredient deleted".to_string(),
+    });
+
+    Ok(Accepted(answer))
+}
+// endregion:ingredients
 
 #[launch]
 fn rocket() -> _ {
@@ -148,7 +207,10 @@ fn rocket() -> _ {
                 delete_category,
                 update_category,
                 create_ingredient,
-                get_all_ingredients
+                get_all_ingredients,
+                get_ingredient,
+                update_ingredient,
+                delete_ingredient
             ],
         )
 }
