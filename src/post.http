@@ -1,26 +1,36 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=RustRover
-
-###
-GET localhost:8000/
-
-
 ### Categories
+
+### Create category
 POST localhost:8000/api/categories
 Content-Type: application/json
 
 {
-  "name": "cat2"
+  "name": "cat4"
 }
 
-
-### 
+### get all categories
 GET localhost:8000/api/categories
 
+### get single category
+GET localhost:8000/api/categories/10
+
+### update categoty
+PUT localhost:8000/api/categories/10
+Content-Type: application/json
+
+{
+  "name": "cat_updated"
+}
+
+### delete categories
+DELETE localhost:8000/api/categories/9
 
 
-### ingredients with description
+
+
+##### Ingredients
+
+### Create ingredient with description
 POST localhost:8000/api/ingredients
 Content-Type: application/json
 
@@ -30,7 +40,7 @@ Content-Type: application/json
   "category_id": 1
 }
 
-### ingredients without description
+### create ingredients without description
 POST localhost:8000/api/ingredients
 Content-Type: application/json
 
@@ -39,5 +49,11 @@ Content-Type: application/json
   "category_id": 1
 }
 
-###
+### get all ingredients
 GET localhost:8000/api/ingredients
+
+### get single ingredient
+
+### update ingredient
+
+### delete ingredient

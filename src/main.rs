@@ -2,15 +2,15 @@ extern crate diesel;
 extern crate rocket;
 
 use crate::db::establish_connection;
-use crate::models::{Category, Ingredient, NewCategory, NewIngredient};
+use crate::models::{Category, Ingredient, Message, NewCategory, NewIngredient};
 use crate::schema::categories::dsl::categories;
 use crate::schema::ingredients::dsl::ingredients;
 use diesel::dsl::{exists, select};
 use diesel::prelude::*;
 use rocket::fs::FileServer;
-use rocket::response::status::{BadRequest, Created};
+use rocket::response::status::{Accepted, BadRequest, Created};
 use rocket::serde::json::Json;
-use rocket::{get, launch, post, routes};
+use rocket::{delete, get, launch, post, put, routes};
 
 mod db;
 mod models;
@@ -34,6 +34,54 @@ fn create_category(post_body: Json<NewCategory>) -> Result<Created<Json<NewCateg
         .expect("Error saving new category");
 
     Ok(Created::new("/").body(post_body))
+}
+
+// new route to update a categorie
+#[put("/categories/<_id>", format = "json", data = "<post_body>")]
+fn update_category(_id: i32, post_body: Json<NewCategory>) -> Result<Created<Json<NewCategory>>> {
+    use crate::schema::categories::dsl::*;
+    let conn = &mut establish_connection();
+
+    diesel::update(categories.find(_id))
+        .set(name.eq(post_body.name.to_string()))
+        .execute(conn)
+        .expect("Error updating category");
+
+    Ok(Created::new("/").body(post_body))
+}
+
+// new route to delete a categorie
+#[delete("/categories/<_id>")]
+fn delete_category(_id: i32) -> Result<Accepted<Json<Message>>> {
+    use crate::schema::categories::dsl::*;
+    let conn = &mut establish_connection();
+
+    let affected_rows = diesel::delete(categories.filter(id.eq(_id)))
+        .execute(conn)
+        .map_err(|_| BadRequest("Error deleting category"))?;
+    
+    if affected_rows == 0 {
+        return Err(BadRequest("Category not found"));
+    }
+
+    let answer = Json(Message {
+        message: "Category deleted".to_string(),
+    });
+
+    Ok(Accepted(answer))
+}
+
+// new route to get a categorie
+#[get("/categories/<_id>")]
+fn get_category(_id: i32) -> Result<Json<Category>> {
+    use crate::schema::categories::dsl::*;
+    let conn = &mut establish_connection();
+    let cat: Category = categories
+        .find(_id)
+        .first(conn)
+        .expect("Error loading categories");
+
+    Ok(Json(cat))
 }
 
 #[get("/categories")]
@@ -87,13 +135,20 @@ fn get_all_ingredients() -> Result<Json<Vec<Ingredient>>> {
     Ok(Json(result))
 }
 
-
 #[launch]
 fn rocket() -> _ {
     rocket::build()
         .mount("/", FileServer::from("static"))
         .mount(
             "/api",
-            routes![create_category, get_all_categories, create_ingredient, get_all_ingredients],
+            routes![
+                create_category,
+                get_all_categories,
+                get_category,
+                delete_category,
+                update_category,
+                create_ingredient,
+                get_all_ingredients
+            ],
         )
 }

@@ -90,3 +90,8 @@ pub struct WeeklyPlan {
 pub struct NewWeeklyPlan {
     pub week_start_date: chrono::NaiveDate,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct Message {
+    pub message: String,
+}
